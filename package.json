@@ -1,16 +1,16 @@
 {
   "name": "common-utils",
   "version": "1.1.0",
-  "description": "",
+  "author": "aalencarvz@gmail.com",
+  "license": "ISC",
+  "type": "module",
+  "description": "a common utils functions to use in javascript and node",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build":"tsc"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "module",
+  "keywords": ["utils","javascript","js","node","common"],
   "devDependencies": {
     "typescript": "^5.8.3"
   }
