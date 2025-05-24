@@ -1,5 +1,5 @@
 {
-  "name": "@aalencarv/common-utils",
+  "name": "@aalencarvz1/common-utils",
   "package":"@aalencarvz1/libs-js-ts-node-common-utils",
   "version": "1.1.1",
   "author": "aalencarvz@gmail.com",
@@ -16,6 +16,7 @@
     "typescript": "^5.8.3"
   },
   "publishConfig": {
-    "@aalencarvz1:registry": "https://npm.pkg.github.com"
+    "@aalencarvz1:registry": "https://npm.pkg.github.com",
+    "access": "public"
   }
 }
