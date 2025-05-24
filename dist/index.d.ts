@@ -23,3 +23,9 @@ export declare function firstValid(arr_valores: any[], check_null?: boolean): an
  * @returns {boolean}
  */
 export declare function hasValue<T>(pValue: T | null | undefined): pValue is T;
+/**
+ * try convert any value to number
+ * @version 1.0.0
+ * @created 2025-01-17
+ */
+export declare function toNumber(v: any): number | null;

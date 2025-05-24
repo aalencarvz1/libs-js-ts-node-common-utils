@@ -119,3 +119,47 @@ export function hasValue<T>(pValue: T | null | undefined) : pValue is T {
     }
     return result;
 }
+
+/**
+ * try convert any value to number
+ * @version 1.0.0
+ * @created 2025-01-17
+ */
+export function toNumber(v: any) : number | null {
+	let r = null;
+	try {
+		const t = typeof v;
+		if (t === 'number') {
+			r = v;
+		} else {
+			if (t === 'boolean') {
+				r = Number(v);  
+			} else if (t === 'string') {
+				r = Number(v);
+				if (isNaN(r)) {
+					v = v.replace(/[^\d|,|.|\-|+]+/ig,'');
+					if (v.length > 0) { 
+						const pc = v.indexOf(",");
+						const pp = v.indexOf(".");
+						if (pc > -1 && pp > -1) {
+							if (pp > pc) {
+								r = Number(v.replaceAll(",",""));
+							} else {
+								r = Number(v.replaceAll(".","").replace(",","."));
+							}
+						} else {
+							if (pc > -1) {
+								r = Number(v.replace(",","."));
+							} else {
+								r = Number(v);
+							}
+						}
+					}
+				}
+			}
+		}
+	} catch(e: any) {
+		console.error(e);
+	}
+	return r;
+}
