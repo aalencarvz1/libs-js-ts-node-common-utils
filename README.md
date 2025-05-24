@@ -207,7 +207,7 @@ toNumber(null);            // null
 
 ## 👤 Autor
 
-[![Aalencar](https://github.com/aalencarvz.png?size=100)](https://github.com/aalencarvz)
+[![Aalencar](https://avatars.githubusercontent.com/u/69355209?v=4&size=64)](https://github.com/aalencarvz)
 
 Desenvolvido por [@aalencarvz](https://github.com/aalencarvz)
 
