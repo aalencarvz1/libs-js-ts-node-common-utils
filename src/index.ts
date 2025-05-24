@@ -125,8 +125,8 @@ export function hasValue<T>(pValue: T | null | undefined) : pValue is T {
  * @version 1.0.0
  * @created 2025-01-17
  */
-export function toNumber(v: any) : number | null {
-	let r = null;
+export function toNumber(v: any) : number {
+	let r : number = 0;
 	try {
 		const t = typeof v;
 		if (t === 'number') {

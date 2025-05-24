@@ -126,7 +126,7 @@ export function hasValue(pValue) {
  * @created 2025-01-17
  */
 export function toNumber(v) {
-    let r = null;
+    let r = 0;
     try {
         const t = typeof v;
         if (t === 'number') {

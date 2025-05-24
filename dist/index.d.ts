@@ -28,4 +28,4 @@ export declare function hasValue<T>(pValue: T | null | undefined): pValue is T;
  * @version 1.0.0
  * @created 2025-01-17
  */
-export declare function toNumber(v: any): number | null;
+export declare function toNumber(v: any): number;
