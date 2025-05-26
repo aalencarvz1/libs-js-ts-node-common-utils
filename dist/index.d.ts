@@ -64,3 +64,4 @@ export declare function toDate(pValue: any, pFormat?: any): Date;
 export declare function toYesNo(value?: any): string;
 export declare function valueOrNull(value?: any): any;
 export declare function valueOrUndef(value?: any): any;
+export declare function getTempNumberId(currentData: any[], tempIdPropName: string): number;

@@ -490,3 +490,12 @@ export function valueOrUndef(value?: any) : any {
 	return hasValue(value) ? value : undefined;
 }
 
+export function getTempNumberId(currentData: any[], tempIdPropName: string) : number {
+	let result = Math.random();
+	if (hasValue(currentData)) {
+		tempIdPropName = tempIdPropName || 'tempId';
+		while(hasValue(currentData.find(el=>el[tempIdPropName] == result))) result = Math.random();
+	}
+	return result;
+}
+

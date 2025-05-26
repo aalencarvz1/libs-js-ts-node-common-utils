@@ -1,6 +1,6 @@
 {
   "name": "@aalencarv/common-utils",
-  "package":"@aalencarvz1/libs-js-ts-node-common-utils",
+  "package": "@aalencarvz1/libs-js-ts-node-common-utils",
   "version": "1.2.2",
   "author": "aalencarvz@gmail.com",
   "license": "ISC",
@@ -9,10 +9,18 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build":"tsc"
+    "test": "cross-env NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" npx jest --verbose",
+    "build": "tsc"
   },
-  "keywords": ["utils","javascript","js","node","common"],
+  "keywords": [
+    "utils",
+    "javascript",
+    "js",
+    "node",
+    "common"
+  ],
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "typescript": "^5.8.3"
   },
   "publishConfig": {

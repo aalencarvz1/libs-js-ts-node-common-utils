@@ -84,6 +84,7 @@ The following table lists all exported functions in the `common-utils` library, 
 | `toYesNo`                | `value?: any`                                  | `string`    | Converts a value to "yes" or "no" based on `toBool`.                        |
 | `valueOrNull`            | `value?: any`                                  | `any`       | Returns the value if it has a value, otherwise null.                        |
 | `valueOrUndef`           | `value?: any`                                  | `any`       | Returns the value if it has a value, otherwise undefined.                   |
+| `getTempNumberId`        | `currentData: any[], tempIdPropName: string `  | `number`    | Generates a unique random number ID for an array of objects, avoiding duplicates based on the specified property name (defaults to 'tempId'). |
 
 
 ## 🧰 Tecnologies

@@ -463,3 +463,12 @@ export function valueOrNull(value) {
 export function valueOrUndef(value) {
     return hasValue(value) ? value : undefined;
 }
+export function getTempNumberId(currentData, tempIdPropName) {
+    let result = Math.random();
+    if (hasValue(currentData)) {
+        tempIdPropName = tempIdPropName || 'tempId';
+        while (hasValue(currentData.find(el => el[tempIdPropName] == result)))
+            result = Math.random();
+    }
+    return result;
+}
