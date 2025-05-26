@@ -1,217 +1,101 @@
 # 🛠️ common-utils
 
-Utilitários comuns para facilitar o desenvolvimento em **JavaScript** e **Node.js**.
+A lightweight TypeScript utility library providing helper functions for date manipulation, type checking, array operations, GTIN validation, and more.
 
 [![npm version](https://badge.fury.io/js/common-utils.svg)](https://badge.fury.io/js/common-utils)
 [![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC)
 ![TypeScript](https://badgen.net/badge/Built%20with/TypeScript/blue)
 
-## 📦 Instalação
+## Table of Contents
+- [Installation](#installation)
+- [Usage](#usage)
+- [Functions](#functions)
+- [License](#license)
 
+
+## 📦 Instalation
+
+You can install `common-utils` via npm (assuming it's published) or by cloning the repository.
+
+### Using npm
 ```bash
 npm install @aalencarv/common-utils
 ```
 
-## 🚀 Uso
+### From Source
+Clone the repository and install dependencies:
 
-```ts
-import { getMoment, toBool, MS_PER_DAY, YEARS, MONTHS, SHORT_MONTHS } from 'common-utils';
-
-console.log(getMoment());
-console.log(toBool("true"));
-console.log(MS_PER_DAY);
-console.log(YEARS);
+```bash
+git clone https://github.com/aalencarvz1/libs-js-ts-node-common-utils.git common-utils
+cd common-utils
+npm install
 ```
 
-## 📚 API
+## Usage
 
-### 📆 Constantes
+Import the functions you need in your TypeScript or JavaScript project:
 
-#### `MS_PER_DAY: number`
+```typescript
+import { getMoment, toBool, toNumber } from '@aalencarv/common-utils';
 
-Quantidade de milissegundos em um dia (24h).
+// Example: Get current date and time
+console.log(getMoment()); // e.g., "26/05/2025 11:39:00.123"
 
-```ts
-console.log(MS_PER_DAY); // 86400000
+// Example: Convert value to boolean
+console.log(toBool("yes")); // true
+console.log(toBool("0")); // false
+
+// Example: Convert string to number
+console.log(toNumber("123.45")); // 123.45
 ```
 
----
+## Functions
 
-#### `YEARS: number[]`
+The following table lists all exported functions in the `common-utils` library, including their parameters, return types, and a brief description of their functionality.
 
-Array de 10 anos, com base no ano atual, contendo 5 anos anteriores e 5 posteriores.
-
-```ts
-console.log(YEARS); // Ex: [2019, 2020, ..., 2028]
-```
-
----
-
-#### `MONTHS: string[]`
-
-Array com o nome dos meses em inglês, por extenso.
-
-```ts
-console.log(MONTHS); // ['january', 'february', ..., 'december']
-```
-
----
-
-#### `SHORT_MONTHS: string[]`
-
-Array com o nome dos meses em inglês, em formato abreviado.
-
-```ts
-console.log(SHORT_MONTHS); // ['jan', 'feb', ..., 'dec']
-```
-
----
-
-### 🕒 Funções
-
-#### `getMoment(): string`
-
-Retorna a data e hora atual no formato `dd/mm/yyyy hh:mm:ss.mmm`.
-
-```ts
-console.log(getMoment()); 
-// Exemplo: "24/05/2025 16:33:12.123"
-```
-
----
-
-#### `toBool(value: any): boolean`
-
-Converte diferentes tipos de entrada para `boolean`.
-
-- Strings como `"true"`, `"1"`, `"yes"` retornam `true`.
-- Strings como `"false"`, `"0"`, `"no"` retornam `false`.
-- Números positivos retornam `true`.
-- Zero, `null`, `undefined`, strings vazias retornam `false`.
-
-```ts
-toBool("true");      // true
-toBool("false");     // false
-toBool(1);           // true
-toBool(0);           // false
-toBool("yes");       // true
-toBool("no");        // false
-```
-
----
-
-#### `typeOf(value: any): string`
-
-Retorna o tipo do valor fornecido, com tratamento especial para arrays e `NodeList`.
-
-- Retorna `"array"` se o valor for um array ou um `NodeList`.
-- Caso contrário, retorna o resultado de `typeof`.
-
-🔍 **Diferencial:** ao contrário do operador `typeof`, que retorna `"object"` para arrays, essa função retorna `"array"` explicitamente.
-
-```ts
-typeOf([1, 2, 3]);            // "array"
-typeOf(document.querySelectorAll('div')); // "array" (se houver DOM)
-typeOf("texto");              // "string"
-typeOf(42);                   // "number"
-typeOf({ nome: "João" });     // "object"
-typeOf(null);                 // "object"
-```
-
----
-
-#### `firstValid(arr_valores: any[], check_null?: boolean): any`
-
-Retorna o **primeiro valor válido** de um array. A função percorre os elementos do array e retorna o primeiro que:
-
-- **Não é `undefined`**, e
-- **Não é `null`** (a menos que `check_null` seja definido como `false`)
-
-Se não encontrar nenhum valor válido ou se o parâmetro não for um array, retorna `null` e exibe erro no console.
-
-##### Parâmetros:
-- `arr_valores`: array com os valores a verificar.
-- `check_null`: se `true` (padrão), também ignora valores `null`.
-
-```ts
-firstValid([undefined, null, 0]);      // 0
-firstValid([undefined, null, "x"]);    // "x"
-firstValid([undefined, null], false);  // null
-firstValid(["", 0, "a"]);              // "" (string vazia é válida)
-```
-
----
-
-#### `hasValue<T>(pValue: T | null | undefined): pValue is T`
-
-Verifica se um valor pode ser considerado **"não vazio"** de forma segura e inteligente, com base no seu tipo.
-
-##### Considerações:
-- Para **strings**: retorna `true` se não for vazia nem composta apenas por espaços.
-- Para **arrays**: `true` se tiver ao menos um item.
-- Para **objetos**: `true` se tiver propriedades ou for uma instância de `Date`.
-- Para tipos primitivos: `true` se não for `null` ou `undefined`.
-- Para **objetos vazios**, arrays vazios ou strings vazias: `false`.
-
-##### Exemplo de uso:
-
-```ts
-hasValue("teste");          // true
-hasValue("   ");            // false
-hasValue([1, 2, 3]);        // true
-hasValue([]);               // false
-hasValue({ a: 1 });         // true
-hasValue({});               // false
-hasValue(new Date());       // true
-hasValue(undefined);        // false
-hasValue(null);             // false
-```
-
----
-
-#### `toNumber(v: any): number | null`
-
-Converte um valor para número, com suporte a strings numéricas em formatos internacionais (vírgula e ponto como separadores decimais).
-
-##### Funcionalidades:
-- Aceita `number`, `boolean` e `string`.
-- Remove caracteres não numéricos.
-- Interpreta corretamente formatos como:
-  - `1,23` → `1.23`
-  - `1.234,56` → `1234.56`
-  - `1,234.56` → `1234.56`
-
-##### Retorna:
-- Um `number` válido, se possível.
-- `null`, caso a conversão não seja possível.
-
-##### Exemplos:
-
-```ts
-toNumber(42);              // 42
-toNumber(true);            // 1
-toNumber("123");           // 123
-toNumber("1,23");          // 1.23
-toNumber("1.234,56");      // 1234.56
-toNumber("1,234.56");      // 1234.56
-toNumber("abc");           // null
-toNumber(null);            // null
-```
-
----
+| Name                     | Parameters                                      | Return Type | Description                                                                 |
+|--------------------------|------------------------------------------------|-------------|-----------------------------------------------------------------------------|
+| `getMoment`              | None                                           | `string`    | Returns the current date and time in the format `DD/MM/YYYY HH:mm:ss.SSS`.  |
+| `toBool`                 | `pValue: any`                                  | `boolean`   | Converts a value to a boolean based on specific rules (e.g., non-zero numbers, non-empty strings). |
+| `typeOf`                 | `value: any`                                   | `string`    | Returns the type of a value, handling arrays and NodeList specifically.     |
+| `isArray`                | `obj: any`                                     | `boolean`   | Checks if a value is an array.                                             |
+| `firstValid`             | `arr_valores: any[]`, `check_null: boolean = true` | `any`       | Returns the first non-undefined (and optionally non-null) element in an array. |
+| `hasValue`               | `pValue: T \| null \| undefined`                 | `boolean`   | Checks if a value is defined, non-null, and non-empty (for strings, arrays, objects). |
+| `toNumber`               | `v: any`                                       | `number`    | Converts a value to a number, handling strings with commas or dots.         |
+| `addFullMonths`          | `date: Date`, `months: number`                 | `void`      | Adds a specified number of months to a Date object, adjusting to the last day if needed. |
+| `arraySplit`             | `array: any[]`, `tamanho: number`              | `any[][]`   | Splits an array into chunks of a specified size.                           |
+| `arrayToObject`          | `array?: any`, `key?: any`                     | `any`       | Converts an array of objects to a nested object based on specified keys.    |
+| `currentMonthDateShort`  | None                                           | `string`    | Returns the current date in `YYYY-MM-DD` format.                            |
+| `calculateGtinDigit`     | `code: string`                                 | `number`    | Calculates the check digit for a GTIN code.                                 |
+| `getGtinType`            | `code?: any`                                   | `any`       | Validates a GTIN code and returns its type (8, 12, 13, or 14) if valid.     |
+| `deleteNotExistsProperty`| `object: any`, `properties: any`               | `void`      | Deletes properties from an object that are not in the provided list.        |
+| `dateDiffInDays`         | `a: Date`, `b: Date`                           | `number`    | Calculates the difference in days between two dates.                        |
+| `deepCopy`               | `arr: any[]`, `subKey: string`, `key: string`, `ignoreIds?: any[]`, `replacements?: any[]` | `any[]` | Creates a deep copy of an array of objects, ignoring specified IDs and applying replacements. |
+| `deepFindByKey`          | `arr: any[]`, `key: string`, `targetId: any`, `subKey: string`, `returnArrayKey?: boolean` | `any` | Recursively finds an object in an array by a key, optionally returning the array and index. |
+| `firstMonthDateShort`    | None                                           | `string`    | Returns the first day of the current month in `YYYY-MM-DD` format.          |
+| `getAllProperties`       | `obj: any`                                     | `string[]`  | Returns all properties and methods of an object, including inherited ones.  |
+| `getKey`                 | `obj: object \| Function \| null \| undefined`, `key: string` | `string \| null` | Finds a case-insensitive key in an object or function.                     |
+| `getMethodName`          | `obj: any`, `methodName: string`               | `string \| null` | Finds a case-insensitive method name in an object or its prototype chain.  |
+| `isClass`                | `func: any`                                    | `boolean`   | Checks if a function is a class (has a constructor in its prototype).      |
+| `singleArrayEquals`      | `arr1?: any[]`, `arr2?: any[]`                 | `boolean`   | Checks if two arrays are equal by comparing elements.                       |
+| `to01`                   | `value?: any`                                  | `number`    | Converts a value to 1 (true) or 0 (false) based on `toBool`.                |
+| `toArray`                | `value?: any`, `delimiter?: string`            | `any[] \| null \| undefined` | Converts a value to an array, splitting strings by a delimiter.            |
+| `toDate`                 | `pValue: any`, `pFormat?: any`                 | `Date`      | Converts a value to a Date object, supporting various formats.              |
+| `toYesNo`                | `value?: any`                                  | `string`    | Converts a value to "yes" or "no" based on `toBool`.                        |
+| `valueOrNull`            | `value?: any`                                  | `any`       | Returns the value if it has a value, otherwise null.                        |
+| `valueOrUndef`           | `value?: any`                                  | `any`       | Returns the value if it has a value, otherwise undefined.                   |
 
 
-## 🧰 Tecnologias
+## 🧰 Tecnologies
 
 - [TypeScript](https://www.typescriptlang.org/)
 
-## 👤 Autor
+## 👤 Author
 
 [![Aalencar](https://avatars.githubusercontent.com/u/69355209?v=4&size=32)](https://github.com/aalencarvz1)
+[@aalencarvz1](https://github.com/aalencarvz1)
 
-Desenvolvido por [@aalencarvz1](https://github.com/aalencarvz1)
 
+## 📄 Licence
 
-## 📄 Licença
-
-Distribuído sob a licença ISC. Veja `LICENSE` para mais informações.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
