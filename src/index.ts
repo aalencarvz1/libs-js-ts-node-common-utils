@@ -163,3 +163,330 @@ export function toNumber(v: any) : number {
 	}
 	return r;
 }
+
+
+export function addFullMonths(date: Date, months: number) : void {
+	const currentMonth = date.getUTCMonth();        
+	date.setUTCMonth(date.getUTCMonth() + months);
+	if (date.getUTCMonth() > currentMonth + months) {
+		date.setUTCDate(0);
+	} 
+	if (date.getUTCDate() != 1) {
+		const lastDate = new Date(date.getUTCFullYear(),date.getUTCMonth()+1,0);
+		date.setUTCDate(lastDate.getUTCDate());
+	}
+}
+
+export function arraySplit(array: any[any], tamanho: number) : any[any] {
+	const result : any[any] = [];
+	for (let i : number = 0; i < array.length; i += tamanho) {
+		result.push(array.slice(i, i + tamanho));
+	}
+	return result;
+}
+
+export function arrayToObject(array?: any,key?: any) : any {
+	const result : any = {};
+	if (array && key) {
+		if (typeOf(key) === 'array') {                
+			let currentPath = null;
+			if (key.length > 1) {
+				for(const i in array) {
+					result[array[i][key[0]]] = result[array[i][key[0]]] || {};
+					currentPath = result[array[i][key[0]]];
+					for(let j : number = 1; j < key.length; j++) {
+						currentPath[array[i][key[j]]] = currentPath[array[i][key[j]]] || {};                        
+						if (j === key.length -1) {
+							if (typeOf(currentPath[array[i][key[j]]]) !== 'array') currentPath[array[i][key[j]]] = []; 
+							currentPath[array[i][key[j]]].push(array[i]);
+						}
+						currentPath = currentPath[array[i][key[j]]];                        
+					}
+				}
+				} else {
+				for(const i in array) {
+					result[array[i][key[0]]] = result[array[i][key[0]]] || [];
+					result[array[i][key[0]]].push(array[i]);
+				}                    
+			}
+		} else {
+			for(const i in array) { 
+				result[array[i][key]] = result[array[i][key]] || [];
+				result[array[i][key]].push(array[i]);
+			}
+		}
+	}        
+	return result;
+}
+
+export function currentMonthDateShort() : string  {
+	let result : Date | string = new Date();
+	result = result.toISOString();
+	result = result.substring(0,10);
+	return result;
+}
+
+
+export function calculateGtinDigit(code: string) : number {
+	let sum = 0;
+	let multiplier = 3;
+
+	// Percorre os dígitos de trás para frente (exceto o último, que é o check digit)
+	for (let i : number = code.length - 2; i >= 0; i--) {
+		let num = parseInt(code[i]);
+		sum += num * multiplier;
+		multiplier = multiplier === 3 ? 1 : 3; // Alterna entre 3 e 1
+	}
+
+	let digit = (10 - (sum % 10)) % 10; // Se for 10, vira 0
+	return digit;
+};
+
+
+export function getGtinType(code?: any) : any {
+	const result : any = {
+		isGtin : false
+	};
+	if (hasValue(code)) {
+		if (typeof code !== 'string') code = code.toString();
+		const numbers = code?.replace(/\D/g, "") || ""; // Remove caracteres não numéricos        
+		if (![8, 12, 13, 14].includes(numbers.length)) return result;
+	
+		const calculatedDigit = calculateGtinDigit(numbers);
+		const informatedDigit = parseInt(numbers[numbers.length - 1]);
+		result.isGtin = calculatedDigit === informatedDigit;
+		if (result.isGtin) {
+			result.type = numbers.length;
+		}
+	}
+	return result;
+};
+
+
+export function deleteNotExistsProperty(object: any,properties: any) : void{
+	properties = toArray(properties || []);
+	properties = properties.join(',').toLowerCase().split(',');
+	for(const k2 in object) {
+		if (properties.indexOf(k2.toLowerCase().trim()) === -1) {
+			delete object[k2];
+		}
+	}
+}
+
+// a and b are javascript Date objects
+export function dateDiffInDays(a: Date, b: Date) : number {
+	
+	// Discard the time and time-zone information.
+	const utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
+	const utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
+
+	return Math.floor((utc2 - utc1) / MS_PER_DAY);
+}
+
+export function deepCopy(arr: any[any], subKey: string, key: string, ignoreIds?: any[], replacements?: any[]) : any[any] {
+	const result = [];
+	for (const k in arr) {
+		if ((ignoreIds||[]).indexOf(arr[k][key]) === -1) {                
+			let toPush = {...arr[k]};
+			const subsTemp = toPush[subKey];                
+			toPush[subKey] = null;
+
+			toPush = (replacements||[]).find(el=>el[key] == toPush[key]) || toPush; // eslint-disable-line eqeqeq
+
+			delete toPush[subKey];
+			result.push(toPush);
+			if (subsTemp && Array.isArray(subsTemp)) {
+				result[result.length-1][subKey] = deepCopy(subsTemp, subKey, key, ignoreIds, replacements);
+			}
+		}
+
+		
+	}
+	return result; 
+}
+
+
+export function deepFindByKey(arr: any[any], key: string, targetId: any, subKey: string, returnArrayKey?: boolean) : any {
+	//for (const obj of arr) {
+	for (const k in arr) {
+		// Verifica se o id atual é o que estamos procurando
+		if (arr[k][key] === targetId) {
+			return returnArrayKey ? {array:arr,key:k} : arr[k]; // Retorna o objeto encontrado
+		}
+
+		// Se o objeto tem uma propriedade "subs", busca recursivamente
+		if (arr[k][subKey] && Array.isArray(arr[k][subKey])) {
+			const result = deepFindByKey(arr[k][subKey], key, targetId, subKey, returnArrayKey);
+			if (result) {
+				return result; // Retorna o resultado se encontrado nos subs
+			}
+		}
+	}
+	return null; // Retorna null se não encontrar o id
+}
+
+export function firstMonthDateShort() : string {
+	let result : Date | string = new Date();
+	result.setDate(1);
+	result = result.toISOString();
+	result = result.substring(0,10);
+	return result;
+} 
+
+/**
+ * Retorna todas as propriedades e métodos, incluindo as herdadas.
+ * @param obj Objeto ou protótipo a ser analisado.
+ * @returns Lista de nomes de propriedades e métodos.
+ */
+export function getAllProperties(obj: any): string[] {
+	const properties = new Set<string>();
+
+	while (obj && obj !== Object.prototype) {
+		// Adiciona todas as propriedades e métodos do nível atual
+		Object.getOwnPropertyNames(obj).forEach((prop) => properties.add(prop));
+		obj = Object.getPrototypeOf(obj); // Move para o próximo nível da herança
+	}
+
+	return [...properties];
+}
+
+
+export function getKey(obj: object | Function | null | undefined, key: string) : string | null {  // eslint-disable-line @typescript-eslint/no-unsafe-function-type
+	let result = null;
+	try {
+		const tObj = typeof obj;
+		if (tObj !== "undefined" && obj != null) { // eslint-disable-line eqeqeq
+			if (tObj === "object" || tObj === "function") {
+				if (typeof key !== "undefined" && key != null) { // eslint-disable-line eqeqeq
+					//let objKeys = Object.keys(obj);
+					const objKeys = Object.getOwnPropertyNames(obj);
+					const keyTemp = key.trim().toLowerCase();
+					for(let i = 0; i < objKeys.length; i++) {
+						if (objKeys[i].trim().toLowerCase() === keyTemp) {
+							result = objKeys[i];
+							break;
+						}
+					}
+				}                    
+			}
+		}
+	} catch(e: any){
+		console.log(e);
+	}
+	return result;
+}
+
+/**
+ * 
+ * @param {*} obj 
+ * @param {*} methodName 
+ * @returns string | null
+ * @created 2024-07-13
+ * @version 1.0.1
+ */
+export function getMethodName(obj:any,methodName:string) : string | null{
+	const ownPropName : string = `${obj.name}_hashMethodsNames`;
+	if (!hasValue(obj[ownPropName])) {            
+		obj[ownPropName] = {};
+
+		let obj2 = obj;
+		do {
+			if (obj2 && typeof obj2 !== 'undefined' && obj2 !== undefined && obj2 !== null) {
+				const keys : any = Reflect.ownKeys(obj2);
+				if (keys && typeof keys !== 'undefined' && keys.length > 0) {
+					for (const k in keys) {
+						try {
+							if (typeof keys[k] === 'string' && [ 'caller', 'callee', 'arguments'].indexOf(keys[k]) === -1 && typeof (obj2||{})[keys[k]]  === 'function') obj[ownPropName][keys[k].toLowerCase()] = keys[k];
+						} catch {
+							obj[ownPropName][keys[k].toLowerCase()] = keys[k];
+						}
+					};
+				}
+			}
+		} while (obj2 = Reflect.getPrototypeOf(obj2)); 
+	}
+
+	if (obj[ownPropName][methodName.trim().toLowerCase()]) {
+		return obj[ownPropName][methodName.trim().toLowerCase()];
+	} 
+	return null;
+}
+
+
+export function isClass(func: any): boolean {
+	return (
+		typeof func === 'function' &&
+		func.prototype &&
+		Object.getOwnPropertyNames(func.prototype).includes('constructor')
+	);
+}
+
+
+export function singleArrayEquals(arr1?:any[], arr2?:any[]) : boolean {
+	if (arr1?.length !== arr2?.length) return false;
+	return arr1?.every((val, index) => val === (arr2||[])[index]) || false;
+}
+
+
+export function to01(value?: any) : number {
+	return toBool(value) ? 1 : 0;
+}
+
+export function toArray(value?: any,delimiter?: string ) : any[] | null | undefined {
+	let result = value;
+	if (value) {
+		if (typeof value === 'string') {
+			delimiter = delimiter || ',';
+			result = value.split(delimiter || ',');
+		} else if (typeOf(value) !== 'array') {
+			result = [value];
+		}
+	}
+	return result;
+}
+
+export function toDate(pValue: any, pFormat?: any ) : Date {
+	let result : any = null;
+	if (pValue && pValue != null) {
+		if (typeof pValue === 'object') {
+			result = new Date(pValue);
+		} else {
+			if (pValue.indexOf("-") > -1) {
+				result = new Date(pValue.substring(0,10).split("-").map(Number));
+			} else if (pValue.indexOf("/") > -1) {
+				result = new Date(pValue.substring(0,10).split("/").reverse().map(Number));
+			} else {
+				if (hasValue(pFormat)) {
+					switch(pFormat.trim().toLowerCase()) {
+						case "yyyymmdd":
+							if(!/^(\d){8}$/.test(pValue)) throw new Error(`invalid date: ${pValue}`);
+							let y = pValue.substr(0,4),
+								m = pValue.substr(4,2),
+								d = pValue.substr(6,2);
+							result = new Date(y,m,d);
+							break;
+						default:
+							throw new Error(`not expected date format: ${pFormat}`);
+					}
+				} else {
+					result = new Date(pValue);
+				}
+			}
+		}
+	}
+	return result;
+}
+
+
+export function toYesNo(value?: any) : string {
+	return toBool(value) ? 'yes' : 'no';
+}
+
+export function valueOrNull(value?: any) : any {
+	return hasValue(value) ? value : null;
+}
+
+export function valueOrUndef(value?: any) : any {
+	return hasValue(value) ? value : undefined;
+}
+

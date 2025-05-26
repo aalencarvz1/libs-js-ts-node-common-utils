@@ -9,7 +9,7 @@ Utilitários comuns para facilitar o desenvolvimento em **JavaScript** e **Node.
 ## 📦 Instalação
 
 ```bash
-npm install github:aalencarvz1/libs-js-ts-node-common-utils
+npm install @aalencarv/common-utils
 ```
 
 ## 🚀 Uso
@@ -207,9 +207,9 @@ toNumber(null);            // null
 
 ## 👤 Autor
 
-[![Aalencar](https://avatars.githubusercontent.com/u/69355209?v=4&size=32)](https://github.com/aalencarvz)
+[![Aalencar](https://avatars.githubusercontent.com/u/69355209?v=4&size=32)](https://github.com/aalencarvz1)
 
-Desenvolvido por [@aalencarvz](https://github.com/aalencarvz)
+Desenvolvido por [@aalencarvz1](https://github.com/aalencarvz1)
 
 
 ## 📄 Licença
