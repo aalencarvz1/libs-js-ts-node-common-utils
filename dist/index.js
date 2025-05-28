@@ -9,22 +9,16 @@ export function getMoment() {
 }
 ;
 export function toBool(pValue) {
-    let result = false;
-    if (typeof pValue !== "undefined" && pValue != null) { // eslint-disable-line eqeqeq
-        if (typeof pValue === "boolean") {
-            result = pValue;
-        }
-        else if (typeof pValue === "string" && ["0", "false", "not", "no", "n", "não", "never", " ", "", "null"].indexOf(pValue.trim().toLowerCase()) === -1) {
-            result = true;
-        }
-        else if (typeof pValue === "number" && pValue !== 0) {
-            return true;
-        }
-        else {
-            result = pValue ? true : false;
-        }
+    switch (typeof pValue) {
+        case "boolean":
+            return pValue;
+        case "string":
+            return ["0", "false", "not", "no", "n", "não", "never", " ", "", "null"].indexOf(pValue.trim().toLowerCase()) === -1;
+        case "number":
+            return pValue !== 0;
+        default:
+            return pValue ? true : false;
     }
-    return result;
 }
 /**
  * returns type of value

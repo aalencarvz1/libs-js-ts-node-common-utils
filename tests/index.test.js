@@ -1,5 +1,5 @@
 
-import { typeOf, hasValue, firstValid, getTempNumberId } from '../dist/index.js';
+import { typeOf, hasValue, firstValid, getTempNumberId, toBool, toNumber } from '../dist/index.js';
 
 
 
@@ -11,6 +11,20 @@ describe("common-utils", () => {
         expect(typeOf(true)).toBe('boolean');
         expect(typeOf({})).toBe('object');
         expect(typeOf([])).toBe('array');
+    });
+
+
+    test('toBool', () => {
+        expect(toBool('')).toBe(false);
+        expect(toBool("0")).toBe(false);
+        expect(toBool("not")).toBe(false);
+        expect(toBool("no")).toBe(false);
+        expect(toBool("n")).toBe(false);
+        expect(toBool("false")).toBe(false);
+        expect(toBool("1")).toBe(true);
+        expect(toBool("yes")).toBe(true);
+        expect(toBool("y")).toBe(true);
+        expect(toBool("true")).toBe(true);
     });
 
     test('hasValue', () => {
@@ -33,6 +47,23 @@ describe("common-utils", () => {
         expect(firstValid([null,undefined,true])).toBe(true);
         expect(firstValid([null,undefined,''])).toBe('');
     })
+
+    test('toNumber', () => {
+        expect(toNumber('')).toBe(0);
+        expect(toNumber("0")).toBe(0);
+        expect(toNumber(null)).toBe(0);
+        expect(toNumber(undefined)).toBe(0);
+        expect(toNumber(1)).toBe(1);
+        expect(toNumber('1')).toBe(1);
+        expect(toNumber('1.1')).toBe(1.1);
+        expect(toNumber('1,1')).toBe(1.1);
+        expect(toNumber('1.111.1')).toBe(NaN); // Invalid format
+        expect(toNumber('1.111,1')).toBe(1111.1);
+        expect(toNumber('1,111,1')).toBe(NaN); // Invalid format
+        expect(toNumber('1,111.1')).toBe(1111.1);
+        expect(toNumber('-1.111,1')).toBe(-1111.1);
+        expect(toNumber('aaaa')).toBe(NaN);
+    });
 
     test('getTempNumberId', () => {
         expect(getTempNumberId([])).toBeGreaterThan(0);
