@@ -451,7 +451,8 @@ export function toDate(pValue: any, pFormat?: any ) : Date {
 			if (pValue.indexOf("-") > -1) {
 				result = new Date(pValue.substring(0,10).split("-").map(Number));
 			} else if (pValue.indexOf("/") > -1) {
-				result = new Date(pValue.substring(0,10).split("/").reverse().map(Number));
+				pValue = pValue.substring(0,10).split("/").reverse().map(Number)
+				result = new Date(pValue[0],pValue[1]-1,pValue[2]);
 			} else {
 				if (hasValue(pFormat)) {
 					switch(pFormat.trim().toLowerCase()) {
