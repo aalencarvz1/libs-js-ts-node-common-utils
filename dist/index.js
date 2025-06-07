@@ -422,7 +422,8 @@ export function toDate(pValue, pFormat) {
         }
         else {
             if (pValue.indexOf("-") > -1) {
-                result = new Date(pValue.substring(0, 10).split("-").map(Number));
+                pValue = pValue.substring(0, 10).split("-").map(Number);
+                result = new Date(pValue[0], pValue[1] - 1, pValue[2]);
             }
             else if (pValue.indexOf("/") > -1) {
                 pValue = pValue.substring(0, 10).split("/").reverse().map(Number);
