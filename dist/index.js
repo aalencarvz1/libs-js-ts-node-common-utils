@@ -181,9 +181,10 @@ export function arraySplit(array, tamanho) {
     }
     return result;
 }
-export function arrayToObject(array, key) {
+export function arrayToObject(array, key, valueAsArray) {
     const result = {};
     if (array && key) {
+        valueAsArray = firstValid([valueAsArray, true]);
         if (typeOf(key) === 'array') {
             let currentPath = null;
             if (key.length > 1) {
@@ -193,25 +194,44 @@ export function arrayToObject(array, key) {
                     for (let j = 1; j < key.length; j++) {
                         currentPath[array[i][key[j]]] = currentPath[array[i][key[j]]] || {};
                         if (j === key.length - 1) {
-                            if (typeOf(currentPath[array[i][key[j]]]) !== 'array')
-                                currentPath[array[i][key[j]]] = [];
-                            currentPath[array[i][key[j]]].push(array[i]);
+                            if (valueAsArray) {
+                                if (typeOf(currentPath[array[i][key[j]]]) !== 'array')
+                                    currentPath[array[i][key[j]]] = [];
+                                currentPath[array[i][key[j]]].push(array[i]);
+                            }
+                            else {
+                                currentPath[array[i][key[j]]] = array[i];
+                            }
                         }
                         currentPath = currentPath[array[i][key[j]]];
                     }
                 }
             }
             else {
-                for (const i in array) {
-                    result[array[i][key[0]]] = result[array[i][key[0]]] || [];
-                    result[array[i][key[0]]].push(array[i]);
+                if (valueAsArray) {
+                    for (const i in array) {
+                        result[array[i][key[0]]] = result[array[i][key[0]]] || [];
+                        result[array[i][key[0]]].push(array[i]);
+                    }
+                }
+                else {
+                    for (const i in array) {
+                        result[array[i][key[0]]] = array[i];
+                    }
                 }
             }
         }
         else {
-            for (const i in array) {
-                result[array[i][key]] = result[array[i][key]] || [];
-                result[array[i][key]].push(array[i]);
+            if (valueAsArray) {
+                for (const i in array) {
+                    result[array[i][key]] = result[array[i][key]] || [];
+                    result[array[i][key]].push(array[i]);
+                }
+            }
+            else {
+                for (const i in array) {
+                    result[array[i][key]] = array[i];
+                }
             }
         }
     }

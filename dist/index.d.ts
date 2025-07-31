@@ -31,7 +31,7 @@ export declare function hasValue<T>(pValue: T | null | undefined): pValue is T;
 export declare function toNumber(v: any): number;
 export declare function addFullMonths(date: Date, months: number): void;
 export declare function arraySplit(array: any[any], tamanho: number): any[any];
-export declare function arrayToObject(array?: any, key?: any): any;
+export declare function arrayToObject(array?: any, key?: any, valueAsArray?: boolean): any;
 export declare function currentMonthDateShort(): string;
 export declare function calculateGtinDigit(code: string): number;
 export declare function getGtinType(code?: any): any;
