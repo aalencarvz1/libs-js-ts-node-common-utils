@@ -526,15 +526,16 @@ export function getTempNumberId(currentData: any[], tempIdPropName: string) : nu
  */
 export function getOrCreateProp(getWhere: any, key: string, initialValue?: any) : any {
 	let result;
-	if (hasValue(getWhere) && hasValue(key)) {
+	if (hasValue(key)) {
 		if (typeOf(getWhere) === 'array') {
 			result = getWhere.find((el: any)=>typeOf(el) === 'object' && Object.keys(el).indexOf(key) > -1);
-			if (typeof result === 'undefined') {
+			if (typeof result === "undefined") {
 				result = {
 					[key]: initialValue
 				}
 				getWhere.push(result);
-			}
+			} 
+            result = result[key];
 		} else if (typeOf(getWhere) === 'object') {
 			let realKey = getKey(getWhere,key);
 			if (hasValue(realKey)) {
@@ -543,7 +544,45 @@ export function getOrCreateProp(getWhere: any, key: string, initialValue?: any) 
 				getWhere[key] = initialValue;
 				result = getWhere[key];
 			}			
-		}
+		} 
+	}
+	return result;
+}
+
+/**
+ * set or create property or array element if not exists with initialValue
+ * @param getWhere where find
+ * @param key key to find
+ * @param initialValue initial value, if is created
+ * @created 2025-10-06
+ * @version 1.0.0
+ * @author aalencarvz1
+ */
+export function setOrCreateProp(getWhere: any, key: string, initialValue?: any) : any {
+	let result : any;
+	if (hasValue(key)) {
+		if (typeOf(getWhere) === 'array') {
+			let index = getWhere.findIndex((el: any)=>typeOf(el) === 'object' && Object.keys(el).indexOf(key) > -1);
+			if (typeof index === "undefined" || index === -1) {
+				result = {
+					[key]: initialValue
+				}
+				getWhere.push(result);
+			} else {
+                result = getWhere[index];
+                result[key] = initialValue || result[key];
+            }
+            result = result[key];
+		} else if (typeOf(getWhere) === 'object') {
+			let realKey = getKey(getWhere,key);
+			if (hasValue(realKey)) {
+                getWhere[realKey] = initialValue || getWhere[realKey];
+				result = getWhere[realKey];
+			} else {
+				getWhere[key] = initialValue;
+				result = getWhere[key];
+			}			
+		} 
 	}
 	return result;
 }
