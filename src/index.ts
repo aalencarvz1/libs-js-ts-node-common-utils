@@ -515,3 +515,36 @@ export function getTempNumberId(currentData: any[], tempIdPropName: string) : nu
 	return result;
 }
 
+/**
+ * get or create property or array element if not exists
+ * @param getWhere where find
+ * @param key key to find
+ * @param initialValue initial value, if is created
+ * @created 2025-10-06
+ * @version 1.0.0
+ * @author aalencarvz1
+ */
+export function getOrCreateProp(getWhere: any, key: string, initialValue?: any) : any {
+	let result;
+	if (hasValue(getWhere) && hasValue(key)) {
+		if (typeOf(getWhere) === 'array') {
+			result = getWhere.find((el: any)=>typeOf(el) === 'object' && Object.keys(el).indexOf(key) > -1);
+			if (typeof result === 'undefined') {
+				result = {
+					[key]: initialValue
+				}
+				getWhere.push(result);
+			}
+		} else if (typeOf(getWhere) === 'object') {
+			let realKey = getKey(getWhere,key);
+			if (hasValue(realKey)) {
+				result = getWhere[realKey];
+			} else {
+				getWhere[key] = initialValue;
+				result = getWhere[key];
+			}			
+		}
+	}
+	return result;
+}
+
