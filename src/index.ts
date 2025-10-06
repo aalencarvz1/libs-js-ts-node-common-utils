@@ -30,7 +30,7 @@ export function toBool(pValue : any) : boolean{
  * @version 1.0.0
  * @created 2025-01-17
  */
-export function typeOf(value : any) : string {
+export function typeOf(value : any) : "array" | "object" | "function" | "string" | "number" | "boolean" | "undefined" | "symbol" | "bigint" | "null" | "unknown" {
     if (typeof NodeList != 'undefined') {
         if (Array.isArray(value) || value instanceof NodeList || value instanceof Array) {
             return "array";
@@ -43,8 +43,8 @@ export function typeOf(value : any) : string {
     return typeof value;
 }
 
-export function isArray(obj : any) : boolean{
-    return typeOf(obj) === "array";
+export function isArray(value : any) : value is any[] | NodeList {
+    return typeOf(value) === "array";
 }
   
 
