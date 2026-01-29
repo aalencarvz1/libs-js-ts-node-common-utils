@@ -38,8 +38,8 @@ export function typeOf(value) {
     }
     return typeof value;
 }
-export function isArray(obj) {
-    return typeOf(obj) === "array";
+export function isArray(value) {
+    return typeOf(value) === "array";
 }
 /**
  * returns first element of array that has value
@@ -487,4 +487,140 @@ export function getTempNumberId(currentData, tempIdPropName) {
             result = Math.random();
     }
     return result;
+}
+/**
+ * get or create property or array element if not exists
+ * @param getWhere where find
+ * @param key key to find
+ * @param initialValue initial value, if is created
+ * @created 2025-10-06
+ * @version 1.0.0
+ * @author aalencarvz1
+ */
+export function getOrCreateProp(getWhere, key, initialValue) {
+    let result;
+    if (hasValue(key)) {
+        if (typeOf(getWhere) === 'array') {
+            result = getWhere.find((el) => typeOf(el) === 'object' && Object.keys(el).indexOf(key) > -1);
+            if (typeof result === "undefined") {
+                result = {
+                    [key]: initialValue
+                };
+                getWhere.push(result);
+            }
+            result = result[key];
+        }
+        else if (typeOf(getWhere) === 'object') {
+            let realKey = getKey(getWhere, key);
+            if (hasValue(realKey)) {
+                result = getWhere[realKey];
+            }
+            else {
+                getWhere[key] = initialValue;
+                result = getWhere[key];
+            }
+        }
+    }
+    return result;
+}
+/**
+ * set or create property or array element if not exists with initialValue
+ * @param getWhere where find
+ * @param key key to find
+ * @param initialValue initial value, if is created
+ * @created 2025-10-06
+ * @version 1.0.0
+ * @author aalencarvz1
+ */
+export function setOrCreateProp(getWhere, key, initialValue) {
+    let result;
+    if (hasValue(key)) {
+        if (typeOf(getWhere) === 'array') {
+            let index = getWhere.findIndex((el) => typeOf(el) === 'object' && Object.keys(el).indexOf(key) > -1);
+            if (typeof index === "undefined" || index === -1) {
+                result = {
+                    [key]: initialValue
+                };
+                getWhere.push(result);
+            }
+            else {
+                result = getWhere[index];
+                result[key] = initialValue || result[key];
+            }
+            result = result[key];
+        }
+        else if (typeOf(getWhere) === 'object') {
+            let realKey = getKey(getWhere, key);
+            if (hasValue(realKey)) {
+                getWhere[realKey] = initialValue || getWhere[realKey];
+                result = getWhere[realKey];
+            }
+            else {
+                getWhere[key] = initialValue;
+                result = getWhere[key];
+            }
+        }
+    }
+    return result;
+}
+export function hexToHsl(hex) {
+    hex = hex.replace('#', '');
+    let r = parseInt(hex.substring(0, 2), 16) / 255;
+    let g = parseInt(hex.substring(2, 4), 16) / 255;
+    let b = parseInt(hex.substring(4, 6), 16) / 255;
+    let max = Math.max(r, g, b), min = Math.min(r, g, b);
+    let h, s, l = (max + min) / 2;
+    if (max === min) {
+        h = s = 0;
+    }
+    else {
+        let d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch (max) {
+            case r:
+                h = (g - b) / d + (g < b ? 6 : 0);
+                break;
+            case g:
+                h = (b - r) / d + 2;
+                break;
+            case b:
+                h = (r - g) / d + 4;
+                break;
+        }
+        h /= 6;
+    }
+    return {
+        h: Math.round(h * 360),
+        s: Math.round(s * 100),
+        l: Math.round(l * 100)
+    };
+}
+export function hslToHex(h, s, l) {
+    s /= 100;
+    l /= 100;
+    let c = (1 - Math.abs(2 * l - 1)) * s;
+    let x = c * (1 - Math.abs((h / 60) % 2 - 1));
+    let m = l - c / 2;
+    let r = 0, g = 0, b = 0;
+    if (h < 60)
+        [r, g, b] = [c, x, 0];
+    else if (h < 120)
+        [r, g, b] = [x, c, 0];
+    else if (h < 180)
+        [r, g, b] = [0, c, x];
+    else if (h < 240)
+        [r, g, b] = [0, x, c];
+    else if (h < 300)
+        [r, g, b] = [x, 0, c];
+    else
+        [r, g, b] = [c, 0, x];
+    r = Math.round((r + m) * 255);
+    g = Math.round((g + m) * 255);
+    b = Math.round((b + m) * 255);
+    return "#" + [r, g, b].map(v => v.toString(16).padStart(2, '0')).join('');
+}
+export function adjustLightness(hex, percent) {
+    const { h, s, l } = hexToHsl(hex);
+    const newL = Math.max(0, Math.min(100, l + percent));
+    return hslToHex(h, s, newL);
 }

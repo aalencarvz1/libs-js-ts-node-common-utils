@@ -9,8 +9,8 @@ export declare function toBool(pValue: any): boolean;
  * @version 1.0.0
  * @created 2025-01-17
  */
-export declare function typeOf(value: any): string;
-export declare function isArray(obj: any): boolean;
+export declare function typeOf(value: any): "array" | "object" | "function" | "string" | "number" | "boolean" | "undefined" | "symbol" | "bigint" | "null" | "unknown";
+export declare function isArray(value: any): value is any[] | NodeList;
 /**
  * returns first element of array that has value
  * @version 1.0.0
@@ -65,3 +65,30 @@ export declare function toYesNo(value?: any): string;
 export declare function valueOrNull(value?: any): any;
 export declare function valueOrUndef(value?: any): any;
 export declare function getTempNumberId(currentData: any[], tempIdPropName: string): number;
+/**
+ * get or create property or array element if not exists
+ * @param getWhere where find
+ * @param key key to find
+ * @param initialValue initial value, if is created
+ * @created 2025-10-06
+ * @version 1.0.0
+ * @author aalencarvz1
+ */
+export declare function getOrCreateProp(getWhere: any, key: string, initialValue?: any): any;
+/**
+ * set or create property or array element if not exists with initialValue
+ * @param getWhere where find
+ * @param key key to find
+ * @param initialValue initial value, if is created
+ * @created 2025-10-06
+ * @version 1.0.0
+ * @author aalencarvz1
+ */
+export declare function setOrCreateProp(getWhere: any, key: string, initialValue?: any): any;
+export declare function hexToHsl(hex: string): {
+    h: number;
+    s: number;
+    l: number;
+};
+export declare function hslToHex(h: number, s: number, l: number): string;
+export declare function adjustLightness(hex: string, percent: number): string;
