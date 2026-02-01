@@ -92,3 +92,6 @@ export declare function hexToHsl(hex: string): {
 };
 export declare function hslToHex(h: number, s: number, l: number): string;
 export declare function adjustLightness(hex: string, percent: number): string;
+export declare function hexToOklch(hex: string): any;
+export declare function oklchToHex(L: number, C: number, H: number): string;
+export declare function adjustOklchLightness(hex: string, percent: number): string;
