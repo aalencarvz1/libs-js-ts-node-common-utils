@@ -233,6 +233,34 @@ export function arrayToObject(array?: any,key?: any, valueAsArray?: boolean) : a
 	return result;
 }
 
+export function flatToNestedArray(inputFlatedArray: any[], idKey?: string, parentIdKey?: string) : any[] {	
+	let nestedData: any = {};
+	if (hasValue(inputFlatedArray)) {
+		idKey = idKey || 'id';
+		parentIdKey = parentIdKey || 'parentId';
+		for(let key in inputFlatedArray || []) {                
+			nestedData[inputFlatedArray[key][idKey]] = inputFlatedArray[key];                
+		}
+		for(let key in nestedData || {}) {
+			if (hasValue(nestedData[key][parentIdKey])) {
+				nestedData[nestedData[key][parentIdKey]].children = nestedData[nestedData[key][parentIdKey]].children || [];
+				nestedData[nestedData[key][parentIdKey]].children.push(nestedData[key]);
+				nestedData[key].removed = true;
+			}
+		}
+		for(let key in nestedData || {}) {
+			if (nestedData[key].removed) {
+				nestedData[key].removed = undefined;
+				delete nestedData[key].removed;
+				nestedData[key] = undefined;
+				delete nestedData[key];
+			}
+		}
+	}
+	nestedData = Object.values(nestedData);
+	return nestedData;
+}
+
 export function currentMonthDateShort() : string  {
 	let result : Date | string = new Date();
 	result = result.toISOString();
