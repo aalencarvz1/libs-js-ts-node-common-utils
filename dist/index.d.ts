@@ -32,6 +32,7 @@ export declare function toNumber(v: any): number;
 export declare function addFullMonths(date: Date, months: number): void;
 export declare function arraySplit(array: any[any], tamanho: number): any[any];
 export declare function arrayToObject(array?: any, key?: any, valueAsArray?: boolean): any;
+export declare function flatToNestedArray(inputFlatedArray: any[], idKey?: string, parentIdKey?: string): any[];
 export declare function currentMonthDateShort(): string;
 export declare function calculateGtinDigit(code: string): number;
 export declare function getGtinType(code?: any): any;
